@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - File Uploader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f1e8 0%, #e8dfd0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a4a4a;
+            padding: 2rem;
+        }
+
+        .landing-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 4rem 3rem;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .landing-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .landing-title {
+            font-size: 2.5rem;
+            color: #6b5b4a;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .landing-subtitle {
+            font-size: 1.1rem;
+            color: #8b7355;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            background: rgba(245, 241, 232, 0.5);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-text {
+            font-size: 0.9rem;
+            color: #6b5b4a;
+            font-weight: 500;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: #8b7355;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #6b5b4a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(107, 91, 74, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #6b5b4a;
+            border: 2px solid #8b7355;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(139, 115, 85, 0.1);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="landing-container">
+        <div class="landing-icon">📁</div>
+
+        <h1 class="landing-title">File Uploader</h1>
+
+        <p class="landing-subtitle">
+            Store, organize, and share your files securely in the cloud.
+            Simple, cozy, and built for your peace of mind.
+        </p>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📂</div>
+                <div class="feature-text">Organize Folders</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">☁️</div>
+                <div class="feature-text">Cloud Storage</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔗</div>
+                <div class="feature-text">Easy Sharing</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-text">Secure Access</div>
+            </div>
+        </div>
+
+        <div class="cta-buttons">
+            <a href="/auth/signup" class="btn btn-primary">Get Started</a>
+            <a href="/auth/login" class="btn btn-secondary">Login</a>
+        </div>
+    </div>
+</body>
+
+</html>

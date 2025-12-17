@@ -23,10 +23,11 @@ model User {
 }
 
 model Session {
-  id        String   @id
-  sid       String   @unique
-  data      String
-  expiresAt DateTime
+  sid    String   @id
+  sess   String
+  expire DateTime
+
+  @@map("session")
 }
 
 model Folder {

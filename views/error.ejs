@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - File Uploader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f1e8 0%, #e8dfd0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a4a4a;
+            padding: 2rem;
+        }
+
+        .error-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .error-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-code {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #8b7355;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            color: #6b5b4a;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .error-message {
+            color: #8b7355;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background: #8b7355;
+            color: white;
+        }
+
+        .btn:hover {
+            background: #6b5b4a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 91, 74, 0.3);
+        }
+
+        .error-details {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(139, 115, 85, 0.2);
+            font-size: 0.85rem;
+            color: #a0938a;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error-container">
+        <div class="error-icon">
+            <% if (status===404) { %>
+                🔍
+                <% } else if (status===403) { %>
+                    🔒
+                    <% } else if (status===500) { %>
+                        ⚠️
+                        <% } else { %>
+                            ❌
+                            <% } %>
+        </div>
+
+        <div class="error-code">
+            <%= status || 500 %>
+        </div>
+
+        <h1 class="error-title">
+            <% if (status===404) { %>
+                Page Not Found
+                <% } else if (status===403) { %>
+                    Access Denied
+                    <% } else if (status===500) { %>
+                        Server Error
+                        <% } else { %>
+                            Something Went Wrong
+                            <% } %>
+        </h1>
+
+        <p class="error-message">
+            <%= message || 'An unexpected error occurred. Please try again later.' %>
+        </p>
+
+        <a href="/dashboard" class="btn">
+            🏠 Back to Dashboard
+        </a>
+
+        <% if (typeof error !=='undefined' && error && process.env.NODE_ENV==='development' ) { %>
+            <div class="error-details">
+                <strong>Error Details (Development Mode):</strong><br>
+                <%= error.stack %>
+            </div>
+            <% } %>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Folder - File Uploader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f1e8 0%, #e8dfd0 100%);
+            min-height: 100vh;
+            color: #4a4a4a;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #6b5b4a;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #8b7355;
+            font-size: 0.95rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(139, 115, 85, 0.1);
+        }
+
+        .card-header h2 {
+            color: #6b5b4a;
+            font-size: 1.4rem;
+        }
+
+        .share-info {
+            background: rgba(245, 241, 232, 0.6);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #8b7355;
+        }
+
+        .share-info p {
+            color: #6b5b4a;
+            margin-bottom: 0.5rem;
+        }
+
+        .share-info strong {
+            color: #8b7355;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .file-item:hover {
+            border-color: #d4c4b0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .item-name {
+            font-weight: 500;
+            color: #6b5b4a;
+            margin-bottom: 0.5rem;
+            word-break: break-word;
+        }
+
+        .item-meta {
+            font-size: 0.85rem;
+            color: #8b7355;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #8b7355;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #6b5b4a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(107, 91, 74, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #8b7355;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .expired-message {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(248, 215, 218, 0.3);
+            border-radius: 12px;
+            border: 2px solid rgba(245, 198, 203, 0.5);
+        }
+
+        .expired-message h2 {
+            color: #721c24;
+            margin-bottom: 1rem;
+        }
+
+        .expired-message p {
+            color: #8b7355;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>📁 Shared Folder</h1>
+        <p>View and download files from this shared folder</p>
+    </div>
+
+    <div class="container">
+        <% if (typeof expired !=='undefined' && expired) { %>
+            <div class="card">
+                <div class="expired-message">
+                    <h2>⏱️ Link Expired</h2>
+                    <p>This share link has expired and is no longer accessible.</p>
+                </div>
+            </div>
+            <% } else { %>
+                <div class="share-info">
+                    <p><strong>📂 Folder:</strong>
+                        <%= folder.name %>
+                    </p>
+                    <p><strong>⏰ Expires:</strong>
+                        <%= new Date(share.expiresAt).toLocaleString() %>
+                    </p>
+                    <p><strong>📊 Files:</strong>
+                        <%= files.length %> file(s)
+                    </p>
+                </div>
+
+                <% if (files.length> 0) { %>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>📄 Files</h2>
+                        </div>
+                        <div class="grid">
+                            <% files.forEach(file=> { %>
+                                <div class="file-item">
+                                    <div class="item-icon">
+                                        <% if (file.mimeType.startsWith('image/')) { %>
+                                            🖼️
+                                            <% } else if (file.mimeType.startsWith('video/')) { %>
+                                                🎥
+                                                <% } else if (file.mimeType.includes('pdf')) { %>
+                                                    📕
+                                                    <% } else if (file.mimeType.includes('word')) { %>
+                                                        📘
+                                                        <% } else if (file.mimeType.includes('excel') ||
+                                                            file.mimeType.includes('spreadsheet')) { %>
+                                                            📗
+                                                            <% } else { %>
+                                                                📄
+                                                                <% } %>
+                                    </div>
+                                    <div class="item-name">
+                                        <%= file.originalName %>
+                                    </div>
+                                    <div class="item-meta">
+                                        <%= (file.size / 1024).toFixed(2) %> KB<br>
+                                            <%= new Date(file.createdAt).toLocaleDateString() %>
+                                    </div>
+                                    <a href="/share/<%= share.token %>/download/<%= file.id %>" class="btn btn-primary">
+                                        ⬇️ Download
+                                    </a>
+                                </div>
+                                <% }) %>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <div class="card">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📭</div>
+                                <h3>No files in this folder</h3>
+                                <p>This folder is currently empty</p>
+                            </div>
+                        </div>
+                        <% } %>
+                            <% } %>
+    </div>
+</body>
+
+</html>

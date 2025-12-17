@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - File Uploader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f1e8 0%, #e8dfd0 100%);
+            min-height: 100vh;
+            color: #4a4a4a;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #6b5b4a;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-info {
+            color: #8b7355;
+            margin-right: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.3rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #8b7355;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #6b5b4a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(107, 91, 74, 0.3);
+        }
+
+        .btn-secondary {
+            background: #d4c4b0;
+            color: #4a4a4a;
+        }
+
+        .btn-secondary:hover {
+            background: #c4b4a0;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(139, 115, 85, 0.1);
+        }
+
+        .card-header h2 {
+            color: #6b5b4a;
+            font-size: 1.4rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #8b7355;
+        }
+
+        .breadcrumb a {
+            color: #6b5b4a;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .folder-item,
+        .file-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .folder-item:hover,
+        .file-item:hover {
+            border-color: #d4c4b0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .folder-item {
+            background: linear-gradient(135deg, #f9f6f0 0%, #f0e9dc 100%);
+        }
+
+        .item-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .item-name {
+            font-weight: 500;
+            color: #6b5b4a;
+            margin-bottom: 0.5rem;
+            word-break: break-word;
+        }
+
+        .item-meta {
+            font-size: 0.85rem;
+            color: #8b7355;
+        }
+
+        .item-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #8b7355;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            color: #6b5b4a;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #6b5b4a;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #d4c4b0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #8b7355;
+            box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 2rem;
+            border: 2px dashed #d4c4b0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(245, 241, 232, 0.5);
+        }
+
+        .file-input-label:hover {
+            border-color: #8b7355;
+            background: rgba(245, 241, 232, 0.8);
+        }
+
+        .selected-file {
+            margin-top: 0.5rem;
+            color: #6b5b4a;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>📁 My Files</h1>
+        <nav>
+            <span class="user-info">👤 <%= user.username %></span>
+            <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <% if (typeof currentFolder !=='undefined' && currentFolder) { %>
+            <div class="breadcrumb">
+                <a href="/dashboard">🏠 Home</a>
+                <span>/</span>
+                <span>
+                    <%= currentFolder.name %>
+                </span>
+            </div>
+            <% } %>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="openModal('folderModal')">
+                        ➕ New Folder
+                    </button>
+                    <button class="btn btn-primary" onclick="openModal('uploadModal')">
+                        ⬆️ Upload File
+                    </button>
+                </div>
+
+                <% if (folders.length> 0 || files.length > 0) { %>
+                    <% if (folders.length> 0) { %>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>📂 Folders</h2>
+                            </div>
+                            <div class="grid">
+                                <% folders.forEach(folder=> { %>
+                                    <div class="folder-item" onclick="window.location.href='/folder/<%= folder.id %>'">
+                                        <div class="item-icon">📁</div>
+                                        <div class="item-name">
+                                            <%= folder.name %>
+                                        </div>
+                                        <div class="item-meta">
+                                            <%= new Date(folder.createdAt).toLocaleDateString() %>
+                                        </div>
+                                        <div class="item-actions" onclick="event.stopPropagation()">
+                                            <button class="btn btn-secondary btn-small"
+                                                onclick="shareFolder('<%= folder.id %>')">
+                                                🔗 Share
+                                            </button>
+                                            <form action="/folder/<%= folder.id %>/delete" method="POST"
+                                                style="display: inline;"
+                                                onsubmit="return confirm('Delete this folder and all its contents?')">
+                                                <button type="submit" class="btn btn-secondary btn-small">🗑️</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                            </div>
+                        </div>
+                        <% } %>
+
+                            <% if (files.length> 0) { %>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h2>📄 Files</h2>
+                                    </div>
+                                    <div class="grid">
+                                        <% files.forEach(file=> { %>
+                                            <div class="file-item">
+                                                <div class="item-icon">
+                                                    <% if (file.mimeType.startsWith('image/')) { %>
+                                                        🖼️
+                                                        <% } else if (file.mimeType.startsWith('video/')) { %>
+                                                            🎥
+                                                            <% } else if (file.mimeType.includes('pdf')) { %>
+                                                                📕
+                                                                <% } else { %>
+                                                                    📄
+                                                                    <% } %>
+                                                </div>
+                                                <div class="item-name">
+                                                    <%= file.originalName %>
+                                                </div>
+                                                <div class="item-meta">
+                                                    <%= (file.size / 1024).toFixed(2) %> KB<br>
+                                                        <%= new Date(file.createdAt).toLocaleDateString() %>
+                                                </div>
+                                                <div class="item-actions">
+                                                    <a href="/file/<%= file.id %>/download"
+                                                        class="btn btn-primary btn-small">⬇️ Download</a>
+                                                    <form action="/file/<%= file.id %>/delete" method="POST"
+                                                        style="display: inline;"
+                                                        onsubmit="return confirm('Delete this file?')">
+                                                        <button type="submit"
+                                                            class="btn btn-secondary btn-small">🗑️</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <% }) %>
+                                    </div>
+                                </div>
+                                <% } %>
+                                    <% } else { %>
+                                        <div class="card">
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon">📭</div>
+                                                <h3>No files or folders yet</h3>
+                                                <p>Create a folder or upload a file to get started</p>
+                                            </div>
+                                        </div>
+                                        <% } %>
+    </div>
+
+    <!-- New Folder Modal -->
+    <div class="modal" id="folderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Folder</h3>
+            </div>
+            <form action="/folder/create" method="POST">
+                <div class="form-group">
+                    <label for="folderName">Folder Name</label>
+                    <input type="text" id="folderName" name="name" placeholder="My Documents" required>
+                </div>
+                <% if (typeof currentFolder !=='undefined' && currentFolder) { %>
+                    <input type="hidden" name="parentId" value="<%= currentFolder.id %>">
+                    <% } %>
+                        <div class="modal-actions">
+                            <button type="button" class="btn btn-secondary"
+                                onclick="closeModal('folderModal')">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload File Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Upload File</h3>
+            </div>
+            <form action="/file/upload" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Select Folder</label>
+                    <select name="folderId" required>
+                        <% if (typeof currentFolder !=='undefined' && currentFolder) { %>
+                            <option value="<%= currentFolder.id %>" selected>
+                                <%= currentFolder.name %>
+                            </option>
+                            <% } %>
+                                <% folders.forEach(folder=> { %>
+                                    <option value="<%= folder.id %>">
+                                        <%= folder.name %>
+                                    </option>
+                                    <% }) %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="fileInput" name="file" required onchange="updateFileName()">
+                        <label for="fileInput" class="file-input-label">
+                            📎 Click to select a file
+                            <div class="selected-file" id="selectedFileName"></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('uploadModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function updateFileName() {
+            const input = document.getElementById('fileInput');
+            const display = document.getElementById('selectedFileName');
+            if (input.files.length > 0) {
+                display.textContent = '✓ ' + input.files[0].name;
+            }
+        }
+
+        function shareFolder(folderId) {
+            const days = prompt('How many days should the share link be valid? (1-30)', '7');
+            if (days) {
+                window.location.href = `/folder/${folderId}/share?days=${days}`;
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+
+</html>
